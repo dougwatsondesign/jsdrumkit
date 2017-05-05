@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd>
+      <span class="sound">clap</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+
+<!-- Below: The audio[]... audio is the element in <audio>, but the brackets are where you do an attribute selector so you can differentiate between the different audio elements. In this case different data keys. The ${e.keyCode} is an ESX Template String, and I think the backward ticks make it possible. -->
+<script>
+     function playSound(e) {
+          const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`); //this is selecting the audio element
+          const key = document.querySelector(`.key[data-key="${e.keyCode}"]`); // the .key is selecting the key class in the div's, could select div or something else
+          if (!audio) return; //This will stop the script altogether.
+          audio.currentTime = 0; //rewinds to start so that it doesn't have to finish the wav before running again
+          audio.play(); //this make it play the audio
+          key.classList.add('playing'); //This adds the class 'playing' to the key element. You could also do .remove or .toggle
+     }
+
+     function removeTransition(e) {
+          if(e.propertyName !== 'transform') return; //skip it if it's not a transform
+          this.classList.remove('playing'); //'this' is equal to whatever is called against it, in this case the key in key.addEventListener. To find out for sure what 'this', just do a console.log(this)
+     }
+
+     const keys = document.querySelectorAll('.key');
+     keys.forEach(key => key.addEventListener('transitionend', removeTransition)); //this loops through all keys and listens for transitionend and runs removeTransition
+     window.addEventListener('keydown', playSound);
+
+
+</script>
+
+
+</body>
+</html>
